@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+dados = read.csv("tempo.csv",sep = ";", na.strings = "",stringsAsFactors = T)
+head(dados)
+```
+```{r}
+#Aparencia - Retirar o campo menos escrito errado
+counts = table(dados$Aparencia)
+barplot(counts, main="Aparencia", xlab="Aparencia")
+
+summary(dados$Aparencia)
+dados[!dados$Aparencia %in% c("sol","nublado","chuva"),]$Aparencia = "sol"
+summary(dados$Aparencia)
+#removemos fatores não usados
+dados$Aparencia =   factor(dados$Aparencia)
+summary(dados$Aparencia)
+
+#Temperatura - retirar temperaturas acima de 130
+counts = table(dados$Temperatura)
+barplot(counts, main="Temperatura", xlab="Temperatura")
+summary(dados$Temperatura)
+boxplot(dados$Temperatura)
+hist(dados$Temperatura)
+
+dados[dados$Temperatura<0 | dados$Temperatura >130 ,]$Temperatura = median(dados$Temperatura) 
+dados[dados$Temperatura<0 | dados$Temperatura >130 ,]
+summary(dados$Temperatura)
+
+#Umidade - umidade entre 0 e 100
+counts = table(dados$Umidade)
+barplot(counts, main="Umidade", xlab="Umidade")
+summary(dados$Umidade)
+boxplot(dados$Umidade)
+hist(dados$Umidade)
+
+dados[dados$Umidade<0 | dados$Umidade >130 ,]$Umidade = median(dados$Umidade) 
+dados[dados$Umidade<0 | dados$Umidade >130 ,]
+summary(dados$Umidade)
+
+
+#Vento 
+counts = table(dados$Vento)
+barplot(counts, main="Vento", xlab="Vento")
+
+#Jogar 
+counts = table(dados$Jogar)
+barplot(counts, main="Jogar", xlab="Jogar")
+
+```
+```{r}
+dados[!complete.cases(dados),]
+#Para dados númericos como Umidade usar a mediana para substituir
+median(dados$Umidade,na.rm = T)
+#atribuir mediana a NAs
+dados[is.na(dados$Umidade),]$Umidade = median(dados$Umidade,na.rm = T)
+#buscar NAS em salario para checar
+dados[!complete.cases(dados$Umidade),]
+
+#Para dados Categoricos como ventos usar a moda da categoria
+summary(dados$Vento)
+dados[is.na(dados$Vento),]$Vento = "FALSO" 
+summary(dados$Vento)
+
+```
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
